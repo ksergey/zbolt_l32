@@ -1,0 +1,1 @@
+ACTION=="add", ATTRS{name}=="10-0038generic ft5x06 (79)", ENV{LIBINPUT_CALIBRATION_MATRIX}="-1 0 1 0 -1 1 0 0 1"

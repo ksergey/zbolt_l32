@@ -2,6 +2,8 @@
 
 use kiauh
 
+# Config
+
 # KlipperScreen installation
 
 Additional packages:
@@ -30,4 +32,3 @@ List cameras:
 ```
 $ libcamera-hello --list-cameras
 ```
-

@@ -1,34 +1,69 @@
 # ZBolt L32
 
-use kiauh
+Конфиг моего принтера ZBolt L32 (сток):
 
-# Config
+* MCU: Fysetc S6 v2
+* Host: Raspberry Pi 3B
+* Display: какой-то дисплей с тачем
+* Camera: какая-то камера
 
-# KlipperScreen installation
 
-Additional packages:
+## Установка системы OS
+
+[Инструкция](https://github.com/dw-0/kiauh/#-prerequisites)
+
+Дополнительно ставим пакет `fbturbo` (может и не надо):
+
 ```sh
 sudo apt install xserver-xorg-video-fbturbo
 ```
 
-Add to `/boot/cmdline.txt` (rotate display):
+### Настройка дисплея + тач
+
+Дисплей установлен вверх ногами, нужно его повернуть на 180. Для этого добавим в `/boot/cmdline.txt` аргумент:
+
 ```
-video=DSI-1:800x480@60,rotate=180
+... video=DSI-1:800x480@60,rotate=180 ...
 ```
 
-Add to `/etc/udev/rules.d/51-touchscreen.rules` (rotate touchscreen):
+Должно получиться что-то похожее на это:
+
+```
+console=serial0,115200 console=tty3 root=PARTUUID=ca9ceff5-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=RU logo.nologo consoleblank=0 vt.global_cursor_default=0 quite video=DSI-1:800x480@60,rotate=180
+```
+
+Дисплей перевернули, теперь нужно перевернуть тач. Для этого создадим файл `/etc/udev/rules.d/51-touchscreen.rules`:
+
 ```
 ACTION=="add", ATTRS{name}=="10-0038generic ft5x06 (79)", ENV{LIBINPUT_CALIBRATION_MATRIX}="-1 0 1 0 -1 1 0 0 1"
 ```
 
-# Crowsnest
+### Настройка камеры
 
-Instruction here:
-https://crowsnest.mainsail.xyz/faq/how-to-setup-a-raspicam
+Инструкция [здесь](https://crowsnest.mainsail.xyz/faq/how-to-setup-a-raspicam), но если вкратце, то необходимо
+раскоментировать строку ниже в `/boot/config.txt`:
 
-Uncoment `dtoverlay=vc4-kms-v3d` in `/boot/config.txt`
-
-List cameras:
 ```
-$ libcamera-hello --list-cameras
+dtoverlay=vc4-kms-v3d
 ```
+
+После перезагрузки должно появиться устройство:
+
+```sh
+/base/soc/i2c0mux/i2c@1/ov5647@36
+```
+
+## Установка Klipper
+
+[Инструкция](https://github.com/dw-0/kiauh/#-download-and-use-kiauh)
+
+Уже из `kiauh` ставим `Klipper`, `Moonraker`, `Crowsnest`, `Fluidd`, `KlipperScreen`
+
+## Установка KAMP
+
+[Инструкция](https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging)
+
+## Настройка Klipper
+
+Все настройки в директории `config`
+

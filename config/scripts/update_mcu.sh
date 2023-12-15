@@ -20,6 +20,7 @@ make -C "${klipperRoot}" clean KCONFIG_CONFIG="${config}"
 make -C "${klipperRoot}" menuconfig KCONFIG_CONFIG="${config}"
 make -C "${klipperRoot}" KCONFIG_CONFIG="${config}"
 make -C "${klipperRoot}" flash KCONFIG_CONFIG="${config}" FLASH_DEVICE=/dev/serial/by-id/usb-Klipper_stm32f446xx_570053000751393038383735-if00
+# make -C "${klipperRoot}" flash KCONFIG_CONFIG="${config}" FLASH_DEVICE=0483:df11
 
 # start klipper
 sudo systemctl start klipper.service

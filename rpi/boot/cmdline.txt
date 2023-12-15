@@ -1,1 +1,0 @@
-console=serial0,115200 console=tty3 root=PARTUUID=ca9ceff5-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=RU logo.nologo consoleblank=0 vt.global_cursor_default=0 quite video=DSI-1:800x480@60,rotate=180

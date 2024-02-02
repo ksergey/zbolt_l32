@@ -73,7 +73,7 @@ dtoverlay=vc4-kms-v3d
 
 gcode:
 
-```gcode
+```
 INPUT_SHAPER_X
 INPUT_SHAPER_Y
 
@@ -90,13 +90,15 @@ INPUT_SHAPER_Y
 
 Взято [отсюда](https://github.com/Frix-x/klippain/blob/main/docs/features/flow_calibration.md)
 
-```gcode
+```
+PRINT_START BED_TEMP=90 EXTRUDER_TEMP=220
 FLOW_MULTIPLIER_CALIBRATION PERIMETERS=3 PURGE_MM=0
+PRINT_END
 ```
 
 Измеряем среднюю толщину стенки получившейся модели и вводим значение в макрос для получения значения потока:
 
-```gcode
+```
 COMPUTE_FLOW_MULTIPLIER MEASURED_THICKNESS=xxx.xxx
 ```
 

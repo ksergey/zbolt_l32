@@ -67,3 +67,36 @@ dtoverlay=vc4-kms-v3d
 
 Все настройки в директории `config`
 
+## Полезное
+
+### Настройка Input Shaper
+
+gcode:
+
+```gcode
+INPUT_SHAPER_X
+INPUT_SHAPER_Y
+
+```
+
+после в консоли линукса:
+
+```bash
+~/klipper/scripts/calibrate_shaper.py /tmp/calibration_data_x_*.csv -o /tmp/shaper_calibrate_x.png
+~/klipper/scripts/calibrate_shaper.py /tmp/calibration_data_y_*.csv -o /tmp/shaper_calibrate_y.png
+```
+
+### Калибровка потока
+
+Взято [отсюда](https://github.com/Frix-x/klippain/blob/main/docs/features/flow_calibration.md)
+
+```gcode
+FLOW_MULTIPLIER_CALIBRATION PERIMETERS=3 PURGE_MM=0
+```
+
+Измеряем среднюю толщину стенки получившейся модели и вводим значение в макрос для получения значения потока:
+
+```gcode
+COMPUTE_FLOW_MULTIPLIER MEASURED_THICKNESS=xxx.xxx
+```
+

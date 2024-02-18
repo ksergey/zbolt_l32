@@ -32,8 +32,7 @@ sudo apt install xserver-xorg-video-fbturbo
 console=serial0,115200 console=tty3 root=PARTUUID=ca9ceff5-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=RU logo.nologo consoleblank=0 vt.global_cursor_default=0 quite video=DSI-1:800x480@60,rotate=180
 ```
 
-Дисплей перевернули, теперь нужно перевернуть тач. Для этого в файле `/usr/share/X11/xorg.conf.d/40-libinput.conf`
-добавим (или обновим) строчки:
+Дисплей перевернули, теперь нужно перевернуть тач. Для этого в файле `/usr/share/X11/xorg.conf.d/40-libinput.conf` пишем:
 
 ```
 Section "InputClass"
@@ -41,7 +40,7 @@ Section "InputClass"
         MatchIsTouchscreen "on"
         MatchDevicePath "/dev/input/event*"
         Driver "libinput"
-        Option "TransformationMatrix" "0 -1 1 1 0 0 0 0 1"
+        Option "TransformationMatrix" "-1 0 1 0 -1 1 0 0 1"
 EndSection
 ```
 

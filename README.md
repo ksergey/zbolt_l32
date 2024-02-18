@@ -47,7 +47,7 @@ EndSection
 ### Настройка камеры
 
 Инструкция [здесь](https://crowsnest.mainsail.xyz/faq/how-to-setup-a-raspicam), но если вкратце, то необходимо
-раскоментировать строку ниже в `/boot/config.txt`:
+раскоментировать строку ниже в `/boot/firmware/config.txt`:
 
 ```
 dtoverlay=vc4-kms-v3d

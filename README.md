@@ -20,7 +20,7 @@ sudo apt install xserver-xorg-video-fbturbo
 
 ### Настройка дисплея + тач
 
-Дисплей установлен вверх ногами, нужно его повернуть на 180. Для этого добавим в `/boot/cmdline.txt` аргумент:
+Дисплей установлен вверх ногами, нужно его повернуть на 180. Для этого добавим в `/boot/firmware/cmdline.txt` аргумент:
 
 ```
 ... video=DSI-1:800x480@60,rotate=180 ...
@@ -32,10 +32,17 @@ sudo apt install xserver-xorg-video-fbturbo
 console=serial0,115200 console=tty3 root=PARTUUID=ca9ceff5-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=RU logo.nologo consoleblank=0 vt.global_cursor_default=0 quite video=DSI-1:800x480@60,rotate=180
 ```
 
-Дисплей перевернули, теперь нужно перевернуть тач. Для этого создадим файл `/etc/udev/rules.d/51-touchscreen.rules`:
+Дисплей перевернули, теперь нужно перевернуть тач. Для этого в файле `/usr/share/X11/xorg.conf.d/40-libinput.conf`
+добавим (или обновим) строчки:
 
 ```
-ACTION=="add", ATTRS{name}=="10-0038generic ft5x06 (79)", ENV{LIBINPUT_CALIBRATION_MATRIX}="-1 0 1 0 -1 1 0 0 1"
+Section "InputClass"
+        Identifier "libinput touchscreen catchall"
+        MatchIsTouchscreen "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+        Option "TransformationMatrix" "0 -1 1 1 0 0 0 0 1"
+EndSection
 ```
 
 ### Настройка камеры

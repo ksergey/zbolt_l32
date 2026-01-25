@@ -4,7 +4,7 @@
 
 * MCU: Fysetc S6 v2
 * Host: Raspberry Pi 3B
-* Display: какой-то дисплей с тачем
+* Display: какой-то 5" дисплей с тачем
 * Camera: какая-то камера
 
 

@@ -1,116 +1,94 @@
-# ZBolt L32
+# DietPi
 
-Конфиг моего принтера ZBolt L32 (сток):
+Ставим по мануалам dietpi
 
-* MCU: Fysetc S6 v2
-* Host: Raspberry Pi 3B
-* Display: какой-то 5" дисплей с тачем
-* Camera: какая-то камера
+## Klipper
 
+Ставим все через kiauh
 
-## Crowsnest
-
-и KlipperScreen:
+## KlipperScreen и Crowsnest
 
 https://crowsnest.mainsail.xyz/faq/how-to-setup-a-raspicam#ov5647-and-or-klipperscreen
 
-## Установка системы OS
+## KlipperScreen
 
-[Инструкция](https://github.com/dw-0/kiauh/#-prerequisites)
+Ставим
 
-Дополнительно ставим пакет `fbturbo` (может и не надо):
+## Display
 
-```sh
-sudo apt install xserver-xorg-video-fbturbo
+`sudo vim /boot/firmware/cmdline.txt`
+
+В конец строки (перед quiet или в самом конце) добавьте:
+
+```bash
+fbcon=rotate:2
 ```
 
-### Настройка дисплея + тач
+Должно быть примерно так:
 
-Дисплей установлен вверх ногами, нужно его повернуть на 180. Для этого добавим в `/boot/firmware/cmdline.txt` аргумент:
-
-```
-... video=DSI-1:800x480@60,rotate=180 ...
+```bash
+console=serial0,115200 console=tty1 root=PARTUUID=08f02beb-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=RU fbcon=rotate:2
 ```
 
-Должно получиться что-то похожее на это:
+Для X11:
+
+Добавить в `/etc/X11/xorg.conf.d/90-rotate.conf`:
 
 ```
-console=serial0,115200 console=tty3 root=PARTUUID=ca9ceff5-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=RU logo.nologo consoleblank=0 vt.global_cursor_default=0 quite video=DSI-1:800x480@60,rotate=180
-```
+Section "Monitor"
+    Identifier "DSI-1"
+    Option "Rotate" "inverted"
+EndSection
 
-Дисплей перевернули, теперь нужно перевернуть тач. Для этого в файле `/usr/share/X11/xorg.conf.d/40-libinput.conf` пишем:
+Section "Screen"
+    Identifier "Screen0"
+    Monitor "DSI-1"
+EndSection
 
-```
 Section "InputClass"
-        Identifier "libinput touchscreen catchall"
-        MatchIsTouchscreen "on"
-        MatchDevicePath "/dev/input/event*"
-        Driver "libinput"
-        Option "TransformationMatrix" "-1 0 1 0 -1 1 0 0 1"
+    Identifier "libinput touchscreen catchall"
+    MatchIsTouchscreen "on"
+    MatchDevicePath "/dev/input/event*"
+    Driver "libinput"
+    Option "TransformationMatrix" "-1 0 1 0 -1 1 0 0 1"
 EndSection
 ```
 
-### Настройка камеры
 
-Инструкция [здесь](https://crowsnest.mainsail.xyz/faq/how-to-setup-a-raspicam), но если вкратце, то необходимо
-раскоментировать строку ниже в `/boot/firmware/config.txt`:
+## NetworkManager для всех юзеров
 
-```
-dtoverlay=vc4-kms-v3d
-```
+`sudo vim /etc/polkit-1/rules.d/10-networkmanager.rules`
 
-После перезагрузки должно появиться устройство:
-
-```sh
-/base/soc/i2c0mux/i2c@1/ov5647@36
-```
-
-## Установка Klipper
-
-[Инструкция](https://github.com/dw-0/kiauh/#-download-and-use-kiauh)
-
-Уже из `kiauh` ставим `Klipper`, `Moonraker`, `Crowsnest`, `Fluidd`, `KlipperScreen`
-
-## Установка KAMP
-
-[Инструкция](https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging)
-
-## Настройка Klipper
-
-Все настройки в директории `config`
-
-## Полезное
-
-### Настройка Input Shaper
-
-gcode:
+Добавить:
 
 ```
-INPUT_SHAPER_X
-INPUT_SHAPER_Y
+polkit.addRule(function(action, subject) {
+    if (action.id.startsWith("org.freedesktop.NetworkManager.")) {
+        return polkit.Result.YES;
+    }
+});
+```
+
+Перезапустите polkit:
+
+```
+sudo systemctl restart polkit
 
 ```
 
-после в консоли линукса:
+## Обновление прошивки
 
 ```bash
-~/klipper/scripts/calibrate_shaper.py /tmp/calibration_data_x_*.csv -o /tmp/shaper_calibrate_x.png
-~/klipper/scripts/calibrate_shaper.py /tmp/calibration_data_y_*.csv -o /tmp/shaper_calibrate_y.png
-```
+sudo systemctl stop klipper-mcu.service klipper.service
 
-### Калибровка потока
+cd ~/klipper
 
-Взято [отсюда](https://github.com/Frix-x/klippain/blob/main/docs/features/flow_calibration.md)
+cp ~/printer_data/config/config.linux_mcu .config
+make clean && make && make flash
 
-```
-PRINT_START BED_TEMP=90 EXTRUDER_TEMP=220
-FLOW_MULTIPLIER_CALIBRATION PERIMETERS=3 PURGE_MM=0
-PRINT_END
-```
+cp ~/printer_data/config/config.fysetc_s6_v2_mcu .config
+make clean && make && make flash FLASH_DEVICE=/dev/serial/by-id/usb-Klipper_stm32f446xx_570053000751393038383735-if00
 
-Измеряем среднюю толщину стенки получившейся модели и вводим значение в макрос для получения значения потока:
+sudo systemctl start klipper-mcu.service klipper.service
 
 ```
-COMPUTE_FLOW_MULTIPLIER MEASURED_THICKNESS=xxx.xxx
-```
-

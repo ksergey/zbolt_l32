@@ -8,6 +8,12 @@
 * Camera: какая-то камера
 
 
+## Crowsnest
+
+и KlipperScreen:
+
+https://crowsnest.mainsail.xyz/faq/how-to-setup-a-raspicam#ov5647-and-or-klipperscreen
+
 ## Установка системы OS
 
 [Инструкция](https://github.com/dw-0/kiauh/#-prerequisites)

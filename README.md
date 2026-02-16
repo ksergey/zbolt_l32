@@ -2,6 +2,10 @@
 
 Ставим по мануалам dietpi
 
+```sh
+sudo apt install -y git tmux kitty-terminfo mc python3 vim
+```
+
 ## Klipper
 
 Ставим все через kiauh

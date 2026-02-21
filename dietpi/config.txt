@@ -61,8 +61,8 @@ start_x=1
 
 #-------GPU memory splits-------
 gpu_mem_256=128
-gpu_mem_512=256
-gpu_mem_1024=256
+gpu_mem_512=128
+gpu_mem_1024=128
 
 #-------Boot splash screen------
 disable_splash=1
@@ -79,7 +79,7 @@ dtparam=audio=off
 
 #-------Serial/UART-----
 # NB: "enable_uart=1" will enforce "core_freq=250" on RPi models with onboard WiFi.
-enable_uart=0
+enable_uart=1
 
 #-------SD card HPD-----
 # Comment to enable SD card hot-plug detection, while booting via USB or network.
@@ -90,8 +90,8 @@ dtparam=sd_poll_once
 temp_limit=75
 initial_turbo=20
 
-#over_voltage=0
-#arm_freq=1400
+over_voltage=1
+arm_freq=1500
 #core_freq=400
 #sdram_freq=500
 
@@ -102,3 +102,10 @@ initial_turbo=20
 arm_64bit=1
 dtoverlay=vc4-fkms-v3d
 camera_auto_detect=0
+
+max_usb_current=1
+dtoverlay=pi3-disable-bt
+
+# Looks like it's fixes issue
+# https://github.com/home-assistant/operating-system/issues/3391
+dtoverlay=dwc2

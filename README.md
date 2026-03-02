@@ -96,3 +96,7 @@ make clean && make && make flash FLASH_DEVICE=/dev/serial/by-id/usb-Klipper_stm3
 sudo systemctl start klipper-mcu.service klipper.service
 
 ```
+
+## Траблы
+
+Почему-то, если врубить DOH на роутере Mikrotik, на rpi3b+ начинает очень херово работать сеть (wifi). По-этому для rpi раздаем адрес с plain DNS

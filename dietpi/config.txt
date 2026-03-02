@@ -62,7 +62,7 @@ start_x=1
 #-------GPU memory splits-------
 gpu_mem_256=128
 gpu_mem_512=128
-gpu_mem_1024=128
+gpu_mem_1024=256
 
 #-------Boot splash screen------
 disable_splash=1
@@ -105,7 +105,4 @@ camera_auto_detect=0
 
 max_usb_current=1
 dtoverlay=pi3-disable-bt
-
-# Looks like it's fixes issue
-# https://github.com/home-assistant/operating-system/issues/3391
 dtoverlay=dwc2
